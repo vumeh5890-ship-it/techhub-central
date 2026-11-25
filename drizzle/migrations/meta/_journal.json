@@ -15,6 +15,13 @@
       "when": 1795529277489,
       "tag": "0001_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795615166279,
+      "tag": "0002_restrict_shared_reads",
+      "breakpoints": true
     }
   ]
 }

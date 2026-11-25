@@ -1133,6 +1133,7 @@ export type Database = {
       is_admin: { Args: never; Returns: boolean }
       is_hr: { Args: never; Returns: boolean }
       is_manager: { Args: never; Returns: boolean }
+      is_staff: { Args: never; Returns: boolean }
       list_users_with_roles: {
         Args: never
         Returns: {
