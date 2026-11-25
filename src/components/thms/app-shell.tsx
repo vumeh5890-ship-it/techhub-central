@@ -131,7 +131,7 @@ function GlobalSearch() {
         <Search className="h-4 w-4" /> Search everything… <kbd className="ml-auto text-[10px]">Ctrl K</kbd>
       </Button>
       <Button variant="ghost" size="icon" className="md:hidden" aria-label="Search" onClick={() => setOpen(true)}><Search className="h-5 w-5" /></Button>
-      <CommandDialog open={open} onOpenChange={setOpen} shouldFilter={false}>
+      <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Search employees, tasks, events, projects, assets…" value={q} onValueChange={setQ} />
         <CommandList>
           <CommandEmpty>{q.length < 2 ? "Type at least 2 characters." : "No results."}</CommandEmpty>

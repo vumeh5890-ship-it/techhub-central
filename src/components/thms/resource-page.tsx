@@ -86,7 +86,7 @@ function buildSchema(fields: Field[]) {
 export function useSignedUrl() {
   return async (bucket: string, path: string) => {
     const { data, error } = await supabase.storage.from(bucket).createSignedUrl(path, 300);
-    if (error || !data) return toast.error("Could not open file");
+    if (error || !data) { toast.error("Could not open file"); return; }
     window.open(data.signedUrl, "_blank", "noopener");
   };
 }
@@ -185,7 +185,7 @@ export function ResourcePage(props: ResourceProps) {
       const payload = props.transform ? props.transform(clean, editing) : clean;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const t = supabase.from(props.table as any);
-      const res = editing ? await t.update(payload as never).eq("id", editing.id).select().single() : await t.insert(payload as never).select().single();
+      const res = editing ? await t.update(payload as never).eq("id", editing["id"]).select().single() : await t.insert(payload as never).select().single();
       if (res.error) throw res.error;
       await props.afterSave?.(res.data as Row, clean, editing);
       return res.data;
@@ -203,7 +203,7 @@ export function ResourcePage(props: ResourceProps) {
   const del = useMutation({
     mutationFn: async (r: Row) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await supabase.from(props.table as any).delete().eq("id", r.id);
+      const { error } = await supabase.from(props.table as any).delete().eq("id", r["id"]);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -217,10 +217,10 @@ export function ResourcePage(props: ResourceProps) {
 
   async function uploadFile(f: Field, file: File) {
     if (!user) return;
-    if (file.size > 10 * 1024 * 1024) return toast.error("File must be under 10 MB");
+    if (file.size > 10 * 1024 * 1024) { toast.error("File must be under 10 MB"); return; }
     const path = `${user.id}/${Date.now()}-${file.name.replace(/[^\w.-]/g, "_")}`;
     const { error } = await supabase.storage.from(f.bucket ?? "media").upload(path, file);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     form.setValue(f.name, path, { shouldDirty: true });
     toast.success("File uploaded");
   }
@@ -270,7 +270,7 @@ export function ResourcePage(props: ResourceProps) {
       ) : error ? (
         <p className="text-sm text-destructive">{(error as Error).message}</p>
       ) : rows.length === 0 ? (
-        <EmptyState title={`No ${props.title.toLowerCase()} yet`} hint={props.emptyHint ?? (props.canCreate ? `Click “New ${props.singular.toLowerCase()}” to add the first record.` : undefined)} />
+        <EmptyState title={`No ${props.title.toLowerCase()} yet`} hint={props.emptyHint ?? (props.canCreate ? `Click “New ${props.singular.toLowerCase()}” to add the first record.` : "")} />
       ) : (
         <div className="overflow-x-auto">
           <Table>
@@ -288,7 +288,7 @@ export function ResourcePage(props: ResourceProps) {
             </TableHeader>
             <TableBody>
               {rows.map((r) => (
-                <TableRow key={r.id}>
+                <TableRow key={r["id"]}>
                   {props.columns.map((c) => (
                     <TableCell key={c.key} className="max-w-xs truncate">{c.render ? c.render(r) : display(c, r) || "—"}</TableCell>
                   ))}
